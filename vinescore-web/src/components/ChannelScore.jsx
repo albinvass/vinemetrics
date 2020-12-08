@@ -12,7 +12,7 @@ function ChannelScore() {
   const [range, setRange] = useState(new TimeRange([new Date(0), new Date(1)]))
 
   useEffect( () => {
-    axios.get(window.location.origin + '/api/score/vassast')
+    axios.get(window.location.origin + '/api/score/vinesauce')
          .then(res => {
            const data = res.data;
            console.log(data)
