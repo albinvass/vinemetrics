@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vinescore-api
+spec:
+  selector:
+    matchLabels:
+      app: vinescore-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vinescore-api
+    spec:
+      containers:
+      - name: vinescore-api
+        image: ghcr.io/albinvass/vinescore-api
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: VINESCORE_GRAPHITE_HOST
+          value: "graphite-statsd"

@@ -2,10 +2,10 @@
 
 version       = "0.1.0"
 author        = "Albin Vass"
-description   = "Score tracker for Vinesauce"
+description   = "irc bot for Vinescore"
 license       = "MIT"
 srcDir        = "src"
-bin           = @["vinescore"]
+bin           = @["vinescore-irc"]
 binDir        = "bin"
 
 

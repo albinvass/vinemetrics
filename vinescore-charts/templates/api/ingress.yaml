@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vinescore-api
+  annotations:
+    cert-manager.io/issuer: "scoresauce-vassast-org"
+spec:
+  tls:
+  - hosts:
+    - scoresauce.vassast.org
+    secretName: tls-scoresauce-vassast-org
+  rules:
+  - host: scoresauce.vassast.org
+    http:
+      paths:
+      - path: /api/
+        pathType: Prefix
+        backend:
+          service:
+            name: vinescore-api
+            port:
+              number: 80
