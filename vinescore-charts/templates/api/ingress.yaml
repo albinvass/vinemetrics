@@ -20,3 +20,10 @@ spec:
             name: vinescore-api
             port:
               number: 80
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vinescore-web
+            port:
+              number: 80

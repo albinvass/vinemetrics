@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vinescore-web
+spec:
+  selector:
+    matchLabels:
+      app: vinescore-web
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vinescore-web
+    spec:
+      containers:
+      - name: vinescore-web
+        image: ghcr.io/albinvass/vinescore-web
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
