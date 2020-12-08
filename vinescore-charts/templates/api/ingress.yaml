@@ -9,8 +9,28 @@ spec:
   - hosts:
     - scoresauce.vassast.org
     secretName: tls-scoresauce-vassast-org
+  - hosts:
+    - scoresauce.tv
+    secretName: tls-scoresauce-tv
   rules:
   - host: scoresauce.vassast.org
+    http:
+      paths:
+      - path: /api/
+        pathType: Prefix
+        backend:
+          service:
+            name: vinescore-api
+            port:
+              number: 80
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vinescore-web
+            port:
+              number: 80
+  - host: scoresauce.tv
     http:
       paths:
       - path: /api/
