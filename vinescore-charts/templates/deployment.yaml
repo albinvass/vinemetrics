@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vinescore-irc
+spec:
+  selector:
+    matchLabels:
+      app: vinescore-irc
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vinescore-irc
+    spec:
+      containers:
+      - name: vinescore-irc
+        image: ghcr.io/albinvass/vinescore-irc
+        imagePullPolicy: Always
+        env:
+        - name: VINESCORE_CHANNELS
+          value: "#vassast,#vinesauce,#vargskeletor"
+        - name: VINESCORE_STATSD_HOST
+          value: "graphite-statsd"
+        - name: VINESCORE_OAUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: vinescore-twitch-oauth
+              key: token
+

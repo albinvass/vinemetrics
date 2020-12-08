@@ -52,7 +52,7 @@ proc main() =
     nick = "vassast",
     joinChans = @channels,
     useSsl = false,
-    serverPass = getEnv("VINESCORE_OATH_TOKEN"),
+    serverPass = getEnv("VINESCORE_OAUTH_TOKEN"),
   )
   logger.log(lvlInfo, "Starting")
   irc.connect()
