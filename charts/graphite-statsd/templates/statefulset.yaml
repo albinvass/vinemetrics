@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: graphite-statsd
+spec:
+  selector:
+    matchLabels:
+      app: graphite-statsd
+  serviceName: graphite-statsd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: graphite-statsd
+    spec:
+      containers:
+      - name: graphite-statsd
+        image: graphiteapp/graphite-statsd
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 8125
+          name: statsd
+        volumeMounts:
+        - name: graphite-storage
+          mountPath: /opt/graphite/storage
+  volumeClaimTemplates:
+  - metadata:
+      name: graphite-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+
