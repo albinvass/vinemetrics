@@ -1,0 +1,7 @@
+digraph G {
+	graph [layout=dot rankdir=LR]
+
+    ircbot -> twitch, graphite
+    api -> graphite
+    frontend -> api
+}
