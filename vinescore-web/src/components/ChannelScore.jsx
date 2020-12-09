@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 import { TimeSeries, TimeRange } from "pondjs";
-import { Charts, ChartContainer, ChartRow, YAxis, LineChart } from "react-timeseries-charts";
+import { Charts, ChartContainer, ChartRow, YAxis, LineChart, styler } from "react-timeseries-charts";
 
 import axios from 'axios';
-
-// Array [ 4, 1607452320 ]
 
 function ChannelScore() {
   const [scoreTimeSeries, setScoreTimeSeries] = useState()
   const [range, setRange] = useState(new TimeRange([new Date(0), new Date(1)]))
+  const scoreStyle = styler([{ key: "score", color: "#208C36", width: 3}]);
 
   useEffect( () => {
     axios.get(window.location.origin + '/api/score/vinesauce')
@@ -30,26 +29,23 @@ function ChannelScore() {
     }, []);
 
   return (
-    <div style={{
-        position: 'absolute', left: '50%', top: '50%',
-        transform: 'translate(-50%, -50%)'
-    }}>
-      <ChartContainer timeRange={range} width={800}>
-        <ChartRow height="200">
-          <YAxis
-            id="axis1"
-            label="Score"
-            min={scoreTimeSeries ? scoreTimeSeries.min("score") : 0}
-            max={scoreTimeSeries ? scoreTimeSeries.max("score") : 50} width="60" type="linear"/>
-          <Charts>
-            <LineChart
-              axis="axis1"
-              series={scoreTimeSeries ? scoreTimeSeries : new TimeSeries()}
-              columns={["score"]}/>
-          </Charts>
-        </ChartRow>
-      </ChartContainer>
-    </div>
+    <ChartContainer timeRange={range}>
+      <ChartRow height="200">
+        <YAxis
+          id="axis1"
+          label="Score"
+          min={scoreTimeSeries ? scoreTimeSeries.min("score") : 0}
+          max={scoreTimeSeries ? scoreTimeSeries.max("score") : 50} width="60" type="linear"/>
+        <Charts>
+          <LineChart
+            axis="axis1"
+            interpolation="curveBasisOpen"
+            style={scoreStyle}
+            series={scoreTimeSeries ? scoreTimeSeries : new TimeSeries()}
+            columns={["score"]}/>
+        </Charts>
+      </ChartRow>
+    </ChartContainer>
   )
 }
 
