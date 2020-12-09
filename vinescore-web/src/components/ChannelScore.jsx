@@ -8,7 +8,7 @@ import axios from 'axios';
 // Array [ 4, 1607452320 ]
 
 function ChannelScore() {
-  const [scoreTimeSeries, setScoreTimeSeries] = useState(new TimeSeries())
+  const [scoreTimeSeries, setScoreTimeSeries] = useState()
   const [range, setRange] = useState(new TimeRange([new Date(0), new Date(1)]))
 
   useEffect( () => {
@@ -30,14 +30,26 @@ function ChannelScore() {
     }, []);
 
   return (
-    <ChartContainer timeRange={range} width={800}>
-      <ChartRow height="200">
-        <YAxis id="axis1" label="Score" min={-50} max={100} width="60" type="linear"/>
-        <Charts>
-          <LineChart axis="axis1" series={scoreTimeSeries} columns={["score"]}/>
-        </Charts>
-      </ChartRow>
-    </ChartContainer>
+    <div style={{
+        position: 'absolute', left: '50%', top: '50%',
+        transform: 'translate(-50%, -50%)'
+    }}>
+      <ChartContainer timeRange={range} width={800}>
+        <ChartRow height="200">
+          <YAxis
+            id="axis1"
+            label="Score"
+            min={scoreTimeSeries ? scoreTimeSeries.min("score") : 0}
+            max={scoreTimeSeries ? scoreTimeSeries.max("score") : 50} width="60" type="linear"/>
+          <Charts>
+            <LineChart
+              axis="axis1"
+              series={scoreTimeSeries ? scoreTimeSeries : new TimeSeries()}
+              columns={["score"]}/>
+          </Charts>
+        </ChartRow>
+      </ChartContainer>
+    </div>
   )
 }
 
