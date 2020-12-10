@@ -38,16 +38,6 @@
     vars:
       nimble_command: test
 
-- job:
-    name: vinescore-web-build
-    parent: js-build
-    vars:
-      zuul_work_dir: "{{ zuul.project.src_dir }}/vinescore-web"
-    nodeset:
-      nodes:
-        - name: fedora
-          label: fedora-pod
-
 - project:
     check:
       jobs: &id001
@@ -55,6 +45,5 @@
       - vinescore-api-test
       - vinescore-irc-build
       - vinescore-irc-test
-      - vinescore-web-build
     gate:
       jobs: *id001
