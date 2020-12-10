@@ -1,0 +1,49 @@
+- job:
+    name: vinescore-api-nimble
+    parent: nimble
+    vars:
+      zuul_work_dir: "{{ zuul.project.src_dir }}/vinescore-api"
+
+- job:
+    name: vinescore-api-build
+    parent: vinescore-api-nimble
+
+- job:
+    name: vinescore-api-test
+    parent: vinescore-api-nimble
+    vars:
+      nimble_command: test
+
+- job:
+    name: vinescore-irc-nimble
+    parent: nimble
+    vars:
+      zuul_work_dir: "{{ zuul.project.src_dir }}/vinescore-irc"
+
+- job:
+    name: vinescore-irc-build
+    parent: vinescore-irc-nimble
+
+- job:
+    name: vinescore-irc-test
+    parent: vinescore-irc-nimble
+    vars:
+      nimble_command: test
+
+- job:
+    name: vinescore-web-build
+    parent: js-build
+    vars:
+      zuul_work_dir: "{{ zuul.project.src_dir }}/vinescore-web"
+
+- project:
+    check:
+      jobs: &id001
+      - vinescore-api-build
+      - vinescore-api-test
+      - vinescore-irc-build
+      - vinescore-irc-test
+      - vinescore-web-build
+    gate:
+      jobs: *id001
+
