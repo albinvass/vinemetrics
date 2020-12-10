@@ -15,3 +15,6 @@ namedBin["vinescore_irc"] = "vinescore-irc"
 requires "nim >= 1.4.2"
 requires "irc"
 requires "metrics"
+
+task test, "Run Testament":
+  exec "testament cat ."

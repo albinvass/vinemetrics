@@ -12,12 +12,12 @@ import metrics
 type
   VineScore = ref object
     channel: string
-    currentScore: int64
+    currentScore*: int64
     gauge: Gauge
     maxVote: int
     minVote: int
 
-proc newVineScore(channel: string): VineScore =
+proc newVineScore*(channel: string): VineScore =
   result = VineScore(
     channel: channel,
     currentScore: 0,
@@ -27,7 +27,7 @@ proc newVineScore(channel: string): VineScore =
   when defined(metrics):
     result.gauge = newGauge(channel[1..^1], &"{channel[1..^1]} gauge")
 
-proc add(vScore: VineScore, vote: int64) =
+proc add*(vScore: VineScore, vote: int64) =
   if vote <= vScore.maxVote and vote >= vScore.minVote:
     vScore.currentScore += vote
     when defined(metrics):
