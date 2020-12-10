@@ -28,7 +28,7 @@ proc newVineScore(channel: string): VineScore =
     result.gauge = newGauge(channel[1..^1], &"{channel[1..^1]} gauge")
 
 proc add(vScore: VineScore, vote: int64) =
-  if vote <= vScore.maxVote or vote >= vScore.minVote:
+  if vote <= vScore.maxVote and vote >= vScore.minVote:
     vScore.currentScore += vote
     when defined(metrics):
       vScore.gauge.inc(vote)
