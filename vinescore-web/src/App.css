@@ -2,6 +2,9 @@ html, body, #root, .App {
   height: 100%;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@600&display=swap');
+
 .App {
   background: #191919;
+  font-family: 'Exo', sans-serif;
 }

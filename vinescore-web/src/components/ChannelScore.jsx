@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { TimeSeries, TimeRange } from "pondjs";
-import { Charts, ChartContainer, ChartRow, YAxis, LineChart, styler } from "react-timeseries-charts";
+import { Charts, ChartContainer, ChartRow, YAxis, LineChart, Resizable, styler } from "react-timeseries-charts";
 
 import axios from 'axios';
 
@@ -15,16 +15,17 @@ function ChannelScore() {
          .then(res => {
            const data = res.data;
            console.log(data)
-           const datapoints = data[0].datapoints.filter((item) => item[0] != null)
-                                                .map((item) => [item[1]*1000, item[0]])
-           const series = new TimeSeries({
-             name: "vassast",
-             columns: ["time", "score"],
-             points: datapoints
-           })
-           setScoreTimeSeries(series);
-           setRange(series.timerange())
-           console.log(datapoints)
+           if (data.length > 0) {
+             const datapoints = data[0].datapoints.filter((item) => item[0] != null)
+                                                  .map((item) => [item[1]*1000, item[0]])
+             const series = new TimeSeries({
+               name: "vassast",
+               columns: ["time", "score"],
+               points: datapoints
+             })
+             setScoreTimeSeries(series);
+             setRange(series.timerange())
+           }
          })
     }, []);
 
