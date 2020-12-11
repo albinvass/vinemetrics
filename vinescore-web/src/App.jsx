@@ -1,34 +1,46 @@
-import { Paper } from '@material-ui/core';
+import { Paper, Container } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import './App.css';
 import ChannelScore from './components/ChannelScore';
 
 const useStyles = makeStyles({
-  root: {
+  graphPaper: {
     background: '#0C0E0C',
     border: 0,
     borderRadius: 3,
     color: 'white',
     alignSelf: 'flex-start',
-    padding: '10px'
+    padding: '100px'
   },
+  graphBanner: {
+    paddingBottom: '50px',
+    fontSize: '24px'
+  }
 });
 
+/*
+ *
+      <div
+        style={{
+          position: 'absolute', top: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+      >
+      </div>
+* */
 function App() {
   const classes = useStyles();
   return (
     <div className="App">
-      <div
-        style={{
-          position: 'absolute', left: '50%', top: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      >
-        <Paper className={classes.root} elevation={3}>
+      <Container maxWidth={'lg'}>
+        <Paper className={classes.graphPaper} elevation={3}>
+          <Container className={classes.graphBanner}>
+            Hey Vinny say something funny.
+          </Container>
           <ChannelScore/>
         </Paper>
-    </div>
+      </Container>
     </div>
   );
 }
