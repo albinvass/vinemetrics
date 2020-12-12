@@ -27,11 +27,13 @@ proc newVineScore*(channel: string): VineScore =
   when defined(metrics):
     result.gauge = newGauge(channel[1..^1], &"{channel[1..^1]} gauge")
 
-proc add*(vScore: VineScore, vote: int64) =
+proc add*(vScore: VineScore, vote: int64): bool =
   if vote <= vScore.maxVote and vote >= vScore.minVote:
     vScore.currentScore += vote
     when defined(metrics):
       vScore.gauge.inc(vote)
+    return true
+  return false
 
 proc main() =
   var logger = newConsoleLogger(levelThreshold=lvlDebug,
@@ -82,8 +84,8 @@ proc main() =
             if msg.startswith("+") or msg.startswith("-"):
               try:
                 let vote = parseInt(msg)
-                vScores[event.origin].add(vote)
-                logger.log(lvlDebug, &"{vScores[event.origin].channel}: {vScores[event.origin].currentScore}")
+                if vScores[event.origin].add(vote):
+                  logger.log(lvlInfo, &"USER VOTED: {event.origin} - {event.nick} - {vScores[event.origin].currentScore}")
               except ValueError:
                 discard
         else:
