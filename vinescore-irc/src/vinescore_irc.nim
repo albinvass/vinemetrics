@@ -27,10 +27,11 @@ proc newVineScore*(channel: string): VineScore =
   when defined(metrics):
     result.gauge = newGauge(channel[1..^1], &"{channel[1..^1]} gauge")
 
-proc add*(vScore: VineScore, vote: int64): bool =
+proc add*(vScore: VineScore, vote: int64, logger: ConsoleLogger): bool =
   if vote <= vScore.maxVote and vote >= vScore.minVote:
     vScore.currentScore += vote
     when defined(metrics):
+      logger.log(lvlDebug, "Sent vote to statsd")
       vScore.gauge.inc(vote)
     return true
   return false
@@ -79,12 +80,12 @@ proc main() =
           if msg == "Improperly formatted auth":
             logger.log(lvlError, msg)
             quit(1)
-          logger.log(lvlDebug, msg)
+          logger.log(lvlDebug, &"{event.origin} - {event.nick}: {msg}")
           if event.origin in vScores:
             if msg.startswith("+") or msg.startswith("-"):
               try:
                 let vote = parseInt(msg)
-                if vScores[event.origin].add(vote):
+                if vScores[event.origin].add(vote, logger):
                   logger.log(lvlInfo, &"USER VOTED: {event.origin} - {event.nick} - {vScores[event.origin].currentScore}")
               except ValueError:
                 discard
