@@ -15,6 +15,7 @@ namedBin["vinescore_irc"] = "vinescore-irc"
 requires "nim >= 1.4.2"
 requires "irc"
 requires "metrics"
+requires "https://github.com/flyx/NimYAML#head"
 
 before test:
   exec "nimble install -d --accept"
