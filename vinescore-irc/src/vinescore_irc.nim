@@ -48,14 +48,6 @@ proc parseOpts(): TableRef[string, string] =
   opts
 
 
-proc add*(vScore: model.Channel, vote: int64): bool =
-  if vote <= vScore.maxVote and vote >= vScore.minVote:
-    vScore.currentScore += vote
-    when defined(metrics):
-      vScore.gauge.inc(vote)
-    return true
-  return false
-
 proc main() =
   var logger = newConsoleLogger(levelThreshold=lvlDebug,
                                 fmtStr="$datetime - $levelname - vinescore: ")
@@ -110,26 +102,7 @@ proc main() =
             quit(1)
           logger.log(lvlDebug, &"{event.origin} - {event.nick}: {msg}")
           if event.origin in vScores:
-            if msg.startswith("+") or msg.startswith("-"):
-              try:
-                let vote = parseInt(msg)
-                if vScores[event.origin].add(vote):
-                  logger.log(lvlInfo, &"USER VOTED: {event.origin} - {event.nick} - {vScores[event.origin].currentScore}")
-              except ValueError:
-                discard
-
-            let channel = model.channels[event.origin]
-            try:
-              logger.log(lvlDebug, &"Checking emotes for {event.origin}")
-              for emoteName, emote in channel.emotes.get():
-                if emoteName in msg:
-                  var count = count(msg, emoteName)
-                  logger.log(lvlDebug, &"Incrementing {emoteName} with {count}")
-                  when defined(metrics):
-                    emote.gauge.inc(int64(count))
-                    echo emote.gauge
-            except UnpackDefect:
-              logger.log(lvlDebug, &"No emotes configured for {event.origin}")
+            model.channels[event.origin].handleIrcEvent(event)
 
         else:
           logger.log(lvlDebug, $event.raw)
