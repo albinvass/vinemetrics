@@ -16,7 +16,6 @@ requires "nim >= 1.4.2"
 requires "irc"
 requires "metrics"
 requires "https://github.com/flyx/NimYAML#head"
-requires "statsd"
 
 
 before test:
