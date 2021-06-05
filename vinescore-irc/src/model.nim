@@ -1,7 +1,8 @@
+import os
 import irc
 import tables
 import logging
-import metrics
+import statsd
 import strutils
 import strformat
 import yaml/serialization, yaml/annotations, streams
@@ -9,10 +10,10 @@ import yaml/serialization, yaml/annotations, streams
 from os import fileExists
 
 type
-  VineScoreConfig = ref VineScoreConfigObj
-  VineScoreConfigObj = object
+  VineScoreConfig = ref object
     logger {.transient.}: ConsoleLogger
     channels*: TableRef[string, Channel]
+    statsd {.transient.}: Statsd
 
   Channel* = ref object
     currentScore* {.transient.}: int64
@@ -25,11 +26,10 @@ type
   ChannelEmote* = ref object
     gauge* {.transient.}: Gauge
 
-proc addScore(vScore: Channel, vote: int64): bool =
+proc addScore(vScore: Channel, vote: int): bool =
   if vote <= vScore.maxVote and vote >= vScore.minVote:
     vScore.currentScore += vote
-    when defined(metrics):
-      vScore.gauge.inc(vote)
+    vScore.gauge.inc(vote)
     return true
   return false
 
@@ -49,9 +49,7 @@ proc handleIrcEvent*(channel: var Channel, event: var IrcEvent) =
       if emoteName in msg:
         var count = count(msg, emoteName)
         channel.logger.log(lvlDebug, &"Incrementing {emoteName} with {count}")
-        when defined(metrics):
-          emote.gauge.inc(int64(count))
-          echo emote.gauge
+        emote.gauge.inc(count)
   except UnpackDefect:
     channel.logger.log(lvlDebug, &"No emotes configured for {event.origin}")
 
@@ -67,36 +65,43 @@ proc addLogging(config: var VineScoreConfig) =
     )
 
 proc addMetrics(config: var VineScoreConfig) =
-  when defined(metrics):
-    for channelName, channel in config.channels:
-      let channelScoreGaugeName = &"{channelName[1..^1]}:score"
-      channel.gauge = newGauge(channelScoreGaugeName, &"{channelName} gauge")
+  let host = getEnv("VINESCORE_STATSD_HOST", "localhost")
+  let port = getEnv("VINESCORE_STATSD_PORT", "8125")
+  config.logger.log(
+      lvlInfo,
+      &"Configuring statsd: {host}:{port}"
+  )
+  config.statsd = newStatsd(
+    host,
+    parseInt(port),
+  )
+  for channelName, channel in config.channels:
+    let channelScoreGaugeName = &"{channelName[1..^1]}:score"
+    channel.gauge = config.statsd.newGauge(channelScoreGaugeName)
+    config.logger.log(
+      lvlInfo,
+      &"Configured channel gauge {channelName}"
+    )
+    try:
       config.logger.log(
         lvlInfo,
-        &"Configured channel gauge {channelName}"
+        &"Configuring emote gauges channel {channelName}"
       )
-      try:
-        config.logger.log(
-          lvlInfo,
-          &"Configuring emote gauges channel {channelName}"
-        )
-        for emoteName, emote in channel.emotes.get():
-          let emoteGaugeName = &"{channelName[1..^1]}:emotes:{emoteName}"
-          config.logger.log(
-            lvlDebug,
-            &"Configuring emote gauge {emoteGaugeName}" &
-            &"for channel {channelName}"
-          )
-          emote.gauge = newGauge(&"{emoteGaugeName}", &"{emoteName} gauge")
-      except UnpackDefect:
+      for emoteName, emote in channel.emotes.get():
+        let emoteGaugeName = &"{channelName[1..^1]}:emotes:{emoteName}"
         config.logger.log(
           lvlDebug,
-          &"No emotes configured for channel {channelName}"
+          &"Configuring emote gauge {emoteGaugeName}" &
+          &"for channel {channelName}"
         )
+        emote.gauge = config.statsd.newGauge(&"{emoteGaugeName}")
+    except UnpackDefect:
+      config.logger.log(
+        lvlDebug,
+        &"No emotes configured for channel {channelName}"
+      )
     
 proc init*(path: string = "/etc/vinescore/config.yaml"): VineScoreConfig =
-  var logger = newConsoleLogger(levelThreshold=lvlDebug,
-                                fmtStr="$datetime - $levelname - vinescore.model: ")
   var config: VineScoreConfig
   if fileExists(path):
     var s = newFileStream(path)

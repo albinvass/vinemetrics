@@ -5,9 +5,7 @@ import sugar
 import tables
 import system
 import options
-import metrics
 import logging
-import strutils
 import parseopt
 import strformat
 
@@ -51,19 +49,12 @@ proc parseOpts(): TableRef[string, string] =
 proc main() =
   var logger = newConsoleLogger(levelThreshold=lvlDebug,
                                 fmtStr="$datetime - $levelname - vinescore: ")
-  when defined(metrics):
-    let host = getEnv("VINESCORE_STATSD_HOST", "localhost")
-    let port = getEnv("VINESCORE_STATSD_PORT", "8125")
-    logger.log(
-        lvlInfo,
-        &"Configuring export backend statsd: {host}:{port}"
-    )
-    addExportBackend(
-      metricProtocol = STATSD,
-      netProtocol = UDP,
-      address = host,
-      port = Port(parseInt(port))
-    )
+  let host = getEnv("VINESCORE_STATSD_HOST", "localhost")
+  let port = getEnv("VINESCORE_STATSD_PORT", "8125")
+  logger.log(
+      lvlInfo,
+      &"Configuring export backend statsd: {host}:{port}"
+  )
 
   var opts = parseOpts()
   var model = init(opts["config"])
