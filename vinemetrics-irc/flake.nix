@@ -18,7 +18,7 @@
     };
   in rec {
     defaultPackage.x86_64-linux = stdenv.mkDerivation rec {
-      name = "vinemetrics-irc";
+      name = "vinemetrics_irc";
       src = self;
       buildInputs = [ nimblePackages.irc ];
       nimFlags = "--path:${nimyaml}";
