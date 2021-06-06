@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vinescore-irc
+  name: vinemetrics-irc
 spec:
   selector:
     matchLabels:
-      app: vinescore-irc
+      app: vinemetrics-irc
   replicas: 1
   template:
     metadata:
       labels:
-        app: vinescore-irc
+        app: vinemetrics-irc
     spec:
       containers:
-      - name: vinescore-irc
-        image: ghcr.io/albinvass/vinescore-irc
+      - name: vinemetrics-irc
+        image: ghcr.io/albinvass/vinemetrics-irc
         imagePullPolicy: Always
         env:
         - name: VINESCORE_CHANNELS
@@ -24,6 +24,6 @@ spec:
         - name: VINESCORE_OAUTH_TOKEN
           valueFrom:
             secretKeyRef:
-              name: vinescore-twitch-oauth
+              name: vinemetrics-twitch-oauth
               key: token
 

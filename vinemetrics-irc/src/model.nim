@@ -56,12 +56,12 @@ proc handleIrcEvent*(channel: var Channel, event: var IrcEvent) =
 proc addLogging(config: var VineScoreConfig) =
   config.logger = newConsoleLogger(
     levelThreshold=lvlDebug,
-    fmtStr="$datetime - $levelname - vinescore.model.VineScoreConfig: "
+    fmtStr="$datetime - $levelname - vinemetrics.model.VineScoreConfig: "
   )
   for name, channel in config.channels:
     channel.logger = newConsoleLogger(
       levelThreshold=lvlDebug,
-      fmtStr= &"$datetime - $levelname - vinescore.model.channel.{name}: "
+      fmtStr= &"$datetime - $levelname - vinemetrics.model.channel.{name}: "
     )
 
 proc addMetrics(config: var VineScoreConfig) =
@@ -101,7 +101,7 @@ proc addMetrics(config: var VineScoreConfig) =
         &"No emotes configured for channel {channelName}"
       )
     
-proc init*(path: string = "/etc/vinescore/config.yaml"): VineScoreConfig =
+proc init*(path: string = "/etc/vinemetrics/config.yaml"): VineScoreConfig =
   var config: VineScoreConfig
   if fileExists(path):
     var s = newFileStream(path)

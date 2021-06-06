@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vinescore-api
+  name: vinemetrics-api
 spec:
   selector:
     matchLabels:
-      app: vinescore-api
+      app: vinemetrics-api
   replicas: 1
   template:
     metadata:
       labels:
-        app: vinescore-api
+        app: vinemetrics-api
     spec:
       containers:
-      - name: vinescore-api
-        image: ghcr.io/albinvass/vinescore-api
+      - name: vinemetrics-api
+        image: ghcr.io/albinvass/vinemetrics-api
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

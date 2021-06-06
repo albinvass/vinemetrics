@@ -1,4 +1,4 @@
-import vinescore_irc
+import vinemetrics_irc
 
 let vScore = newVineScore("#unused")
 

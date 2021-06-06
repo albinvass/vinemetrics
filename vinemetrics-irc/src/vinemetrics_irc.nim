@@ -14,16 +14,16 @@ import model
 
 proc writeHelp() =
   echo """
-  vinescore-irc
+  vinemetrics-irc
 
   optional arguments:
   -h, --help:   Prints this command
-  -c, --config: Path to config file (default: /etc/vinescore/config.yaml)
+  -c, --config: Path to config file (default: /etc/vinemetrics/config.yaml)
   """
 
 
 proc defaultOpts(): TableRef[string, string] =
-  {"config": "/etc/vinescore/config.yaml"}.newTable
+  {"config": "/etc/vinemetrics/config.yaml"}.newTable
 
 proc parseOpts(): TableRef[string, string] =
   var opts = defaultOpts()
@@ -48,7 +48,7 @@ proc parseOpts(): TableRef[string, string] =
 
 proc main() =
   var logger = newConsoleLogger(levelThreshold=lvlDebug,
-                                fmtStr="$datetime - $levelname - vinescore: ")
+                                fmtStr="$datetime - $levelname - vinemetrics: ")
   let host = getEnv("VINESCORE_STATSD_HOST", "localhost")
   let port = getEnv("VINESCORE_STATSD_PORT", "8125")
   logger.log(

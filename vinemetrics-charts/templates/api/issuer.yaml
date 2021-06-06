@@ -7,7 +7,7 @@ spec:
     server: https://acme-v02.api.letsencrypt.org/directory
     email: albin.vass@gmail.com
     privateKeySecretRef:
-      name: scoresauce-vinescore-org
+      name: scoresauce-vinemetrics-org
     solvers:
     - http01:
         ingress:

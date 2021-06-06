@@ -1,15 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: vinescore-web
+  name: vinemetrics-api
   labels:
-    app: vinescore-web
+    app: vinemetrics-api
 spec:
   ports:
   - port: 80
     targetPort: http
     name: http
   selector:
-    app: vinescore-web
-
+    app: vinemetrics-api
 

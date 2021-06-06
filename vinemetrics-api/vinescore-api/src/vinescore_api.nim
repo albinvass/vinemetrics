@@ -8,7 +8,7 @@ import rosencrantz
 
 
 var logger = newConsoleLogger(levelThreshold=lvlDebug,
-                              fmtStr="$datetime - $levelname - vinescore: ")
+                              fmtStr="$datetime - $levelname - vinemetrics: ")
 
 
 proc getChannelScore(channel: string): Handler =

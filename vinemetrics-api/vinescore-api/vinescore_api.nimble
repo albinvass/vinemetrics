@@ -5,9 +5,9 @@ author                    = "Albin Vass"
 description               = "Api for Vinescore"
 license                   = "MIT"
 srcDir                    = "src"
-bin                       = @["vinescore_api"]
+bin                       = @["vinemetrics_api"]
 binDir                    = "bin"
-namedBin["vinescore_api"] = "vinescore-api"
+namedBin["vinemetrics_api"] = "vinescore-api"
 
 
 # Dependencies
