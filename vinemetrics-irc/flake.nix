@@ -7,7 +7,7 @@
   outputs = { self, nixpkgs, flake-nimble }: 
   with import nixpkgs {
     system = "x86_64-linux";
-    overlays = [ flake-nimble.overlay ];
+    overlays = [ flake-nimble.overlay (import ./overlay.nix) ];
   };
   let
     nimyaml = fetchFromGitHub {
