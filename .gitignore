@@ -7,3 +7,6 @@ nimcache
 testresults
 testresults.html
 tests/megatest.nim
+
+# Local Netlify folder
+.netlify
