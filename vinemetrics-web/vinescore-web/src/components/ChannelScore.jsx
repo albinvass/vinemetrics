@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { TimeSeries, TimeRange } from "pondjs";
-import { Charts, ChartContainer, ChartRow, YAxis, LineChart, Resizable, styler } from "react-timeseries-charts";
+import { Charts, ChartContainer, ChartRow, YAxis, LineChart, styler } from "react-timeseries-charts";
 
 import axios from 'axios';
 
