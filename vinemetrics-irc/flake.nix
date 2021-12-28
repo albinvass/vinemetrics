@@ -16,8 +16,7 @@
       rev = "9916c340c1d5fcb18008898d1864f37164439858";
       sha256 = "1wkwnqxq9mzhqn5ayw33zxfhfk6gph3rkbbchw0yh3ll4h6bm987";
     };
-  in rec {
-    defaultPackage.x86_64-linux = stdenv.mkDerivation rec {
+    vinemetrics_irc =  stdenv.mkDerivation rec {
       name = "vinemetrics_irc";
       src = self;
       buildInputs = [ nimblePackages.irc ];
@@ -44,6 +43,13 @@
         mkdir -p $out/bin
         install  -t $out/bin ./src/vinemetrics_irc'';
     };
-    devShell.x86_64-linux = defaultPackage.x86_64-linux;
+  in rec {
+    defaultPackage.x86_64-linux = vinemetrics_irc;
+    packages.x86_64-linux.container = dockerTools.buildImage {
+      name = "vinemetrics-irc";
+      config = {
+        Cmd = [ "${vinemetrics_irc}/bin/vinemetrics_irc" ];
+      };
+    };
   };
 }
